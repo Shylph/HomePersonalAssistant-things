@@ -3,6 +3,9 @@ package com.blogspot.myks790.alassistant.things;
 import android.app.Activity;
 import android.os.Bundle;
 
+import com.blogspot.myks790.alassistant.things.Sensor.BME280Sensor;
+import com.blogspot.myks790.alassistant.things.Sensor.SensorCallback;
+
 /**
  * Skeleton of an Android Things activity.
  * <p>
@@ -24,10 +27,37 @@ import android.os.Bundle;
  */
 public class MainActivity extends Activity {
 
+    private BME280Sensor bme280Sensor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+
+        bme280Sensor = new BME280Sensor(this, "I2C1");
+        bme280Sensor.register(new SensorCallback() {
+            @Override
+            public void changeTemperature(float temperature) {
+                System.out.println("t:"+bme280Sensor.getTemperature());
+
+            }
+
+            @Override
+            public void changePressure(float pressure) {
+
+            }
+
+            @Override
+            public void changeHumidity(float humidity) {
+                System.out.println("h:"+bme280Sensor.getHumidity());
+            }
+        },25);
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        bme280Sensor.unregister();
+        super.onDestroy();
     }
 }
