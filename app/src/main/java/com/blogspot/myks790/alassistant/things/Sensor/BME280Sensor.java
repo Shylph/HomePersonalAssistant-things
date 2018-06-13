@@ -50,11 +50,6 @@ public class BME280Sensor {
         @Override
         public void onSensorChanged(SensorEvent event) {
             humidity = event.values[0];
-            if (humidity > 50) {
-                humidity = 0.8f * humidity - 0.2f * 50;
-            } else {
-                humidity = 0.2f * 50 - 0.8f * humidity;
-            }
         }
 
         @Override
@@ -84,7 +79,9 @@ public class BME280Sensor {
     public void register(Context context, String pin) {
         registerFlg = true;
         sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-        sensorManager.registerDynamicSensorCallback(dynamicSensorCallback);
+        if (sensorManager != null) {
+            sensorManager.registerDynamicSensorCallback(dynamicSensorCallback);
+        }
 
         try {
             bmx280SensorDriver = new Bmx280SensorDriver(pin);
