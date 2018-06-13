@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.blogspot.myks790.alassistant.things.Sensor.BME280Sensor;
+import com.google.android.things.device.TimeManager;
 
 /**
  * Skeleton of an Android Things activity.
@@ -30,6 +31,8 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        TimeManager timeManager = TimeManager.getInstance();
+        timeManager.setTimeZone("Asia/Seoul");
         setContentView(R.layout.activity_main);
 
         BME280Sensor bme280Sensor = BME280Sensor.getInstance();
