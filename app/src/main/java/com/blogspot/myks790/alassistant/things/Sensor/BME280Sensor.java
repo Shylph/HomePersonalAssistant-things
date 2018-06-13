@@ -12,37 +12,22 @@ import com.google.android.things.contrib.driver.bmx280.Bmx280SensorDriver;
 import java.io.IOException;
 
 public class BME280Sensor {
+    private static BME280Sensor bme280Sensor;
+    private static boolean registerFlg;
     private static final String TAG = BME280Sensor.class.getSimpleName();
-    private Context context;
-    private String pin;
     private Bmx280SensorDriver bmx280SensorDriver;
     private SensorManager sensorManager;
     private float temperature;
-    private int temperatureCount;
     private float pressure;
-    private int pressureCount;
     private float humidity;
-    private int humidityCount;
-    private int sensingTerm;
-    private SensorCallback sensorCallback;
 
-    public BME280Sensor(Context context, String pin) {
-        this.context = context;
-        this.pin = pin;
-        humidityCount = 0;
-        pressureCount = 0;
-        temperatureCount = 0;
+    private BME280Sensor() {
     }
 
     private SensorEventListener temperatureSensorEventListener = new SensorEventListener() {
         @Override
         public void onSensorChanged(SensorEvent event) {
             temperature = event.values[0];
-            temperatureCount = temperatureCount % sensingTerm;
-            if (temperatureCount == 0) {
-                sensorCallback.changeTemperature(temperature);
-            }
-            temperatureCount++;
         }
 
         @Override
@@ -54,11 +39,6 @@ public class BME280Sensor {
         @Override
         public void onSensorChanged(SensorEvent event) {
             pressure = event.values[0];
-            pressureCount = pressureCount % sensingTerm;
-            if (pressureCount == 0) {
-                sensorCallback.changePressure(pressure);
-            }
-            pressureCount++;
         }
 
         @Override
@@ -75,11 +55,6 @@ public class BME280Sensor {
             } else {
                 humidity = 0.2f * 50 - 0.8f * humidity;
             }
-            humidityCount = humidityCount % sensingTerm;
-            if (humidityCount == 0) {
-                sensorCallback.changeHumidity(humidity);
-            }
-            humidityCount++;
         }
 
         @Override
@@ -106,9 +81,8 @@ public class BME280Sensor {
         }
     };
 
-    public void register(SensorCallback sensorCallback, int sensingTerm) {
-        this.sensorCallback = sensorCallback;
-        this.sensingTerm = sensingTerm;
+    public void register(Context context, String pin) {
+        registerFlg = true;
         sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         sensorManager.registerDynamicSensorCallback(dynamicSensorCallback);
 
@@ -123,6 +97,7 @@ public class BME280Sensor {
     }
 
     public void unregister() {
+        registerFlg = false;
         sensorManager.unregisterDynamicSensorCallback(dynamicSensorCallback);
         sensorManager.unregisterListener(pressureSensorEventListener);
         sensorManager.unregisterListener(temperatureSensorEventListener);
@@ -151,5 +126,14 @@ public class BME280Sensor {
 
     public float getHumidity() {
         return humidity;
+    }
+
+    public static BME280Sensor getInstance() {
+        if (bme280Sensor == null)
+            return bme280Sensor = new BME280Sensor();
+        else{
+            Log.d("info","bme280 sensor register : "+ registerFlg);
+            return bme280Sensor;
+        }
     }
 }

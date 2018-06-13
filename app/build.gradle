@@ -26,4 +26,12 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     compileOnly 'com.google.android.things:androidthings:1.0'
     implementation 'com.google.android.things.contrib:driver-bmx280:0.5'
+    // https://mvnrepository.com/artifact/org.restlet.jse/org.restlet
+    implementation group: 'org.restlet.jse', name: 'org.restlet', version: '2.3-SNAPSHOT'
+    // https://mvnrepository.com/artifact/org.restlet.jse/org.restlet.ext.json
+    implementation group: 'org.restlet.jse', name: 'org.restlet.ext.json', version: '2.3-SNAPSHOT'
+    // https://mvnrepository.com/artifact/org.restlet.jse/org.restlet.ext.nio
+    implementation group: 'org.restlet.jse', name: 'org.restlet.ext.nio', version: '2.3-SNAPSHOT'
+    // https://mvnrepository.com/artifact/com.android.support/support-annotations
+    implementation group: 'com.android.support', name: 'support-annotations', version: '27.1.1'
 }

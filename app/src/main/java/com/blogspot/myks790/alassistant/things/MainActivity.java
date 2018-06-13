@@ -1,10 +1,10 @@
 package com.blogspot.myks790.alassistant.things;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.blogspot.myks790.alassistant.things.Sensor.BME280Sensor;
-import com.blogspot.myks790.alassistant.things.Sensor.SensorCallback;
 
 /**
  * Skeleton of an Android Things activity.
@@ -27,37 +27,25 @@ import com.blogspot.myks790.alassistant.things.Sensor.SensorCallback;
  */
 public class MainActivity extends Activity {
 
-    private BME280Sensor bme280Sensor;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        bme280Sensor = new BME280Sensor(this, "I2C1");
-        bme280Sensor.register(new SensorCallback() {
-            @Override
-            public void changeTemperature(float temperature) {
-                System.out.println("t:"+bme280Sensor.getTemperature());
+        BME280Sensor bme280Sensor = BME280Sensor.getInstance();
+        bme280Sensor.register(this, "I2C1");
 
-            }
-
-            @Override
-            public void changePressure(float pressure) {
-
-            }
-
-            @Override
-            public void changeHumidity(float humidity) {
-                System.out.println("h:"+bme280Sensor.getHumidity());
-            }
-        },25);
-
+        Intent i = new Intent(this, APIServerService.class);
+        i.setAction(APIServerService.START_API_SERVER);
+        startService(i);
     }
 
     @Override
     protected void onDestroy() {
-        bme280Sensor.unregister();
         super.onDestroy();
+        BME280Sensor.getInstance().unregister();
+        Intent i = new Intent(this, APIServerService.class);
+        i.setAction(APIServerService.STOP_API_SERVER);
+        startService(i);
     }
 }
