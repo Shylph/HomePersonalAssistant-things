@@ -23,7 +23,7 @@ public class SensorResource extends ServerResource {
         BME280Sensor bme280Sensor = BME280Sensor.getInstance();
         long now = System.currentTimeMillis();
         Date date = new Date(now);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:00.SSSZ", Locale.KOREA);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSSZ", Locale.KOREA);
         float temperature = bme280Sensor.getTemperature();
         float humidity = bme280Sensor.getHumidity();
         try {
